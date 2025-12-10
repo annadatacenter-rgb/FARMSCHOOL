@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Farmschool - రైతు బడి</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Telugu Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Ramabhadra&family=Suranna&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Suranna', serif;
+            background-color: #f0fdf4;
+            /* Prevent pull-to-refresh on mobile to feel more native */
+            overscroll-behavior-y: none;
+        }
+        
+        /* Smooth transitions between "Pages" */
+        .page-container {
+            display: none;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+            padding-bottom: 80px; /* Space for bottom nav */
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        .page-active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hide scrollbar mostly but keep functionality */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .glass-header {
+            background: rgba(22, 101, 52, 0.98);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Press animation for buttons */
+        .btn-press:active {
+            transform: scale(0.96);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 h-screen w-screen overflow-hidden flex flex-col text-gray-800">
+
+    <!-- APP HEADER (Fixed Top) -->
+    <header class="glass-header text-white p-4 shadow-md z-40 flex justify-between items-center h-16 shrink-0">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('')">
+            <div class="bg-white text-green-800 p-1.5 rounded-full w-9 h-9 flex items-center justify-center shadow-sm">
+                <i class="fa-solid fa-seedling text-lg"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold font-['Ramabhadra'] leading-none">Farmschool</h1>
+                <p class="text-[10px] opacity-90 leading-none mt-1">రైతు బడి</p>
+            </div>
+        </div>
+        
+        <!-- Page Title Display in Header -->
+        <div id="headerTitle" class="font-bold text-sm bg-white/10 px-3 py-1 rounded-full hidden">
+            Home
+        </div>
+
+        <!-- Back Button (Only visible on sub-pages) -->
+        <button id="backBtn" onclick="window.history.back()" class="hidden w-10 h-10 flex items-center justify-center active:bg-white/20 rounded-full transition">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+    </header>
+
+    <!-- MAIN CONTENT AREA (Where pages switch) -->
+    <main id="mainContainer" class="flex-1 relative overflow-hidden bg-white w-full max-w-lg mx-auto shadow-2xl">
+
+        <!-- PAGE 1: HOME DASHBOARD -->
+        <div id="homePage" class="page-container page-active p-6">
+            <div class="text-center mt-4 mb-8">
+                <h2 class="text-2xl text-green-800 font-bold mb-1">నమస్కారం!</h2>
+                <p class="text-gray-500 text-sm">మీకు కావలసిన సేవను ఎంచుకోండి</p>
+            </div>
+
+            <!-- New Feature: Weather Card -->
+            <div class="mt-4 bg-white border border-blue-200 rounded-xl p-5 shadow-lg mb-8">
+                <div class="flex items-center justify-between mb-4 border-b pb-2 border-blue-50">
+                    <h3 class="text-xl font-bold text-blue-700 flex items-center gap-2">
+                        <i class="fa-solid fa-cloud-sun text-2xl"></i> నేటి వాతావరణం
+                    </h3>
+                    <span class="text-sm text-gray-500 font-['Ramabhadra']">అమరావతి ప్రాంతం</span>
+                </div>
+                <div id="weatherInfo" class="grid grid-cols-3 gap-4 text-center">
+                    <!-- Weather details injected here -->
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div onclick="navigateTo('organic')" class="btn-press bg-green-50 border border-green-200 rounded-2xl p-4 flex flex-col items-center justify-center gap-3 h-40 shadow-sm hover:shadow-md transition-all cursor-pointer">
+                    <div class="bg-green-600 text-white w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-md ring-4 ring-green-100">
+                        <i class="fa-solid fa-leaf"></i>
+                    </div>
+                    <span class="font-bold text-green-900 text-center">సేంద్రీయ<br>వ్యవసాయం</span>
+                </div>
+
+                <div onclick="navigateTo('news')" class="btn-press bg-blue-50 border border-blue-200 rounded-2xl p-4 flex flex-col items-center justify-center gap-3 h-40 shadow-sm hover:shadow-md transition-all cursor-pointer">
+                    <div class="bg-blue-600 text-white w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-md ring-4 ring-blue-100">
+                        <i class="fa-solid fa-newspaper"></i>
+                    </div>
+                    <span class="font-bold text-blue-900 text-center">వార్తలు</span>
+                </div>
+
+                <div onclick="navigateTo('schemes')" class="btn-press bg-orange-50 border border-orange-200 rounded-2xl p-4 flex flex-col items-center justify-center gap-3 h-40 shadow-sm hover:shadow-md transition-all cursor-pointer">
+                    <div class="bg-orange-600 text-white w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-md ring-4 ring-orange-100">
+                        <i class="fa-solid fa-hand-holding-dollar"></i>
+                    </div>
+                    <span class="font-bold text-orange-900 text-center">ప్రభుత్వ<br>పథకాలు</span>
+                </div>
+
+                <div onclick="navigateTo('tollfree')" class="btn-press bg-red-50 border border-red-200 rounded-2xl p-4 flex flex-col items-center justify-center gap-3 h-40 shadow-sm hover:shadow-md transition-all cursor-pointer">
+                    <div class="bg-red-600 text-white w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-md ring-4 ring-red-100">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+                    <span class="font-bold text-red-900 text-center">టోల్ ఫ్రీ<br>నెంబర్లు</span>
+                </div>
+            </div>
+
+            <!-- Footer Info -->
+            <div class="mt-10 text-center">
+                <div class="inline-block px-4 py-2 bg-gray-100 rounded-full text-xs text-gray-500">
+                    <i class="fa-solid fa-location-dot mr-1"></i> ఆంధ్రప్రదేశ్ రైతు బిడ్డల కోసం
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 2: ORGANIC FARMING -->
+        <div id="organicPage" class="page-container p-4">
+            <div class="mb-4 flex items-center gap-2 text-green-800 border-b border-green-100 pb-2">
+                <i class="fa-solid fa-leaf text-xl"></i>
+                <h2 class="text-xl font-bold">పంటల వివరాలు</h2>
+            </div>
+            <div id="cropsList" class="grid grid-cols-1 gap-3">
+                <!-- Crops injected via JS -->
+            </div>
+        </div>
+
+        <!-- PAGE 3: NEWS -->
+        <div id="newsPage" class="page-container bg-gray-50">
+            <div class="p-4 bg-white shadow-sm sticky top-0 z-10 mb-4">
+                <h2 class="text-xl font-bold text-blue-800 flex items-center gap-2">
+                    <i class="fa-solid fa-newspaper"></i> తాజా వార్తలు
+                </h2>
+            </div>
+            <div id="newsList" class="px-4 space-y-4">
+                <!-- News injected via JS -->
+            </div>
+        </div>
+
+        <!-- PAGE 4: SCHEMES -->
+        <div id="schemesPage" class="page-container p-4">
+            <div class="mb-4 flex items-center gap-2 text-orange-800 border-b border-orange-100 pb-2">
+                <i class="fa-solid fa-landmark text-xl"></i>
+                <h2 class="text-xl font-bold">సంక్షేమ పథకాలు</h2>
+            </div>
+            <div id="schemesList" class="space-y-4">
+                <!-- Schemes injected via JS -->
+            </div>
+        </div>
+
+        <!-- PAGE 5: TOLL FREE -->
+        <div id="tollfreePage" class="page-container p-4">
+            <div class="mb-4 flex items-center gap-2 text-red-800 border-b border-red-100 pb-2">
+                <i class="fa-solid fa-phone-volume text-xl"></i>
+                <h2 class="text-xl font-bold">సహాయవాణి</h2>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-red-100 flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold text-gray-800">రైతు భరోసా కేంద్రం</h3>
+                        <p class="text-xs text-gray-500">వ్యవసాయ సలహాలు</p>
+                    </div>
+                    <a href="tel:155251" class="btn-press bg-red-50 text-red-600 w-12 h-12 rounded-full flex items-center justify-center hover:bg-red-600 hover:text-white transition shadow-sm">
+                        <i class="fa-solid fa-phone-alt"></i>
+                    </a>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-green-100 flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold text-gray-800">కిసాన్ కాల్ సెంటర్</h3>
+                        <p class="text-xs text-gray-500">కేంద్ర ప్రభుత్వ సేవలు</p>
+                    </div>
+                    <a href="tel:18001801551" class="btn-press bg-green-50 text-green-600 w-12 h-12 rounded-full flex items-center justify-center hover:bg-green-600 hover:text-white transition shadow-sm">
+                        <i class="fa-solid fa-phone-alt"></i>
+                    </a>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-blue-100 flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold text-gray-800">అగ్రి హెల్ప్ లైన్</h3>
+                        <p class="text-xs text-gray-500">సాధారణ విచారణ</p>
+                    </div>
+                    <a href="tel:1907" class="btn-press bg-blue-50 text-blue-600 w-12 h-12 rounded-full flex items-center justify-center hover:bg-blue-600 hover:text-white transition shadow-sm">
+                        <i class="fa-solid fa-phone-alt"></i>
+                    </a>
+                </div>
+                
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-orange-100 flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold text-gray-800">విద్యుత్ హెల్ప్ లైన్</h3>
+                        <p class="text-xs text-gray-500">వ్యవసాయ కనెక్షన్ సమస్యలు</p>
+                    </div>
+                    <a href="tel:1912" class="btn-press bg-orange-50 text-orange-600 w-12 h-12 rounded-full flex items-center justify-center hover:bg-orange-600 hover:text-white transition shadow-sm">
+                        <i class="fa-solid fa-bolt"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FIXED BOTTOM NAVIGATION (Visible only on sub-pages) -->
+    <nav id="bottomNav" class="hidden bg-white border-t border-gray-200 h-16 flex justify-around items-center shrink-0 w-full max-w-lg mx-auto z-40 fixed bottom-0 left-0 right-0">
+        <button onclick="navigateTo('')" class="nav-btn flex flex-col items-center text-gray-400 w-full h-full justify-center active:bg-gray-50" data-target="">
+            <i class="fa-solid fa-home text-lg mb-1"></i>
+            <span class="text-[10px]">హోమ్</span>
+        </button>
+        <button onclick="navigateTo('organic')" class="nav-btn flex flex-col items-center text-gray-400 w-full h-full justify-center active:bg-gray-50" data-target="organic">
+            <i class="fa-solid fa-leaf text-lg mb-1"></i>
+            <span class="text-[10px]">పంటలు</span>
+        </button>
+        <button onclick="navigateTo('news')" class="nav-btn flex flex-col items-center text-gray-400 w-full h-full justify-center active:bg-gray-50" data-target="news">
+            <i class="fa-solid fa-newspaper text-lg mb-1"></i>
+            <span class="text-[10px]">వార్తలు</span>
+        </button>
+        <button onclick="navigateTo('schemes')" class="nav-btn flex flex-col items-center text-gray-400 w-full h-full justify-center active:bg-gray-50" data-target="schemes">
+            <i class="fa-solid fa-hand-holding-dollar text-lg mb-1"></i>
+            <span class="text-[10px]">పథకాలు</span>
+        </button>
+    </nav>
+
+    <!-- MODAL (Overlay) - Placed outside Main for better Z-Index handling -->
+    <div id="cropModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-end sm:items-center justify-center backdrop-blur-sm transition-opacity duration-300">
+        <div class="bg-white w-full max-w-lg h-[85vh] sm:h-[600px] sm:rounded-2xl rounded-t-2xl flex flex-col shadow-2xl animate-slide-up transform transition-transform">
+            
+            <!-- Modal Header -->
+            <div class="p-4 bg-green-700 text-white rounded-t-2xl flex justify-between items-center shrink-0 shadow-md">
+                <h3 id="modalTitle" class="text-xl font-bold font-['Ramabhadra']">Crop Name</h3>
+                <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- Modal Content -->
+            <div class="p-5 overflow-y-auto flex-1 bg-green-50/50">
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-green-100">
+                    <div class="flex justify-between items-center mb-4 pb-2 border-b border-gray-100">
+                        <span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded">Organic Guide</span>
+                        
+                        <button id="modalSpeakBtn" onclick="toggleModalSpeech()" class="bg-green-600 text-white px-4 py-1.5 rounded-full text-sm flex items-center gap-2 shadow hover:bg-green-700 transition">
+                            <i class="fa-solid fa-volume-high"></i> వినండి
+                        </button>
+                    </div>
+                    <p id="modalContent" class="text-gray-700 leading-8 text-lg font-['Suranna'] whitespace-pre-line">
+                        <!-- Content goes here -->
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. DATA --- //
+        const cropsData = [
+            { id: 1, name: "వరి (Paddy)", icon: "fa-bowl-rice", color: "text-yellow-600 bg-yellow-50", desc: "వరి సేంద్రీయ సాగు విధానం:\n\n1. విత్తన శుద్ధి: బీజామృతంతో విత్తన శుద్ధి చేయాలి. ఇది తెగుళ్ళను అరికడుతుంది.\n2. నారుమడి: ఘన జీవామృతం వేసి నారు పెంచాలి.\n3. నాటు: శ్రీ వరి సాగు పద్ధతి (SRI) ద్వారా తక్కువ నీటితో ఎక్కువ దిగుబడి పొందవచ్చు.\n4. ఎరువులు: ద్రవ జీవామృతం ప్రతి 15 రోజులకు ఒకసారి పారించాలి." },
+            { id: 2, name: "మిరప (Chilli)", icon: "fa-pepper-hot", color: "text-red-600 bg-red-50", desc: "మిరప సేంద్రీయ సాగు:\n\n1. నేల తయారీ: ఎకరానికి 4 టన్నుల పశువుల ఎరువు వేయాలి. ట్రైకోడెర్మా విరిడి కలపడం ముఖ్యం.\n2. ఎరువులు: వేప పిండి, ఆముదం పిండి వేస్తే వేరు కుళ్ళు తెగులు రాదు.\n3. పురుగు నివారణ: తామర పురుగుల కోసం నీలం రంగు అట్టలు ఏర్పాటు చేయాలి." },
+            { id: 3, name: "వేరుశనగ (Groundnut)", icon: "fa-cubes-stacked", color: "text-amber-700 bg-amber-50", desc: "వేరుశనగ సేంద్రీయ మెలకువలు:\n\n1. విత్తన శుద్ధి: ట్రైకోడెర్మా విరిడితో విత్తన శుద్ధి తప్పనిసరి.\n2. జిప్సం: పూత దశలో జిప్సం వేయడం వల్ల ఊడలు బాగా దిగుతాయి.\n3. ఎరువులు: ఘన జీవామృతం ఆఖరి దుక్కిలో వేయాలి." },
+            { id: 4, name: "పత్తి (Cotton)", icon: "fa-cloud", color: "text-gray-600 bg-gray-50", desc: "పత్తి సేంద్రీయ సాగు:\n\n1. గులాబీ రంగు పురుగు: లింగాకర్షక బుట్టలు (Pheromone traps) ఎకరానికి 10 పెట్టాలి.\n2. వేప నూనె: ప్రతి 20 రోజులకు ఒకసారి 5% వేప నూనె పిచికారీ చేయాలి.\n3. పక్షి స్థావరాలు ఏర్పాటు చేస్తే పక్షులు వచ్చి పురుగులను తింటాయి." },
+            { id: 5, name: "టమాటో (Tomato)", icon: "fa-apple-whole", color: "text-red-500 bg-red-50", desc: "టమాటో సాగు:\n\n1. నారు శుద్ధి: నారు నాటే ముందు వేర్లను బీజామృతంలో ముంచాలి.\n2. మల్చింగ్: వరి గడ్డితో మల్చింగ్ చేస్తే కలుపు తగ్గుతుంది.\n3. ఎరువులు: వర్మి కంపోస్ట్ (Vermi compost) వాడితే కాయ నాణ్యత పెరుగుతుంది." },
+            { id: 6, name: "చెరుకు (Sugarcane)", icon: "fa-cane-cane", color: "text-green-900 bg-green-100", desc: "చెరుకు సేంద్రీయ సాగు:\n\n1. కటింగ్ శుద్ధి: చెరుకు నాటే ముందు సుడోమోనాస్ ద్రావణంలో కటింగ్ ముంచాలి.\n2. ఎరువులు: ఆవు పేడను, బెల్లం నీటిని కలిపి పారించాలి.\n3. పచ్చి రొట్ట: జనుము వంటి పచ్చి రొట్ట పైర్లను పెంచి నేలలో కలియదున్నాలి." },
+            { id: 7, name: "అరటి (Banana)", icon: "fa-banana", color: "text-yellow-700 bg-yellow-100", desc: "అరటి తోటల పెంపకం:\n\n1. నీటి పారుదల: అరటికి బిందు సేద్యం (Drip Irrigation) ఉత్తమం.\n2. తెగులు: పనామా విల్ట్ తెగులు రాకుండా జీవామృతం ఉపయోగించాలి.\n3. మల్చింగ్: అరటి ఆకులను తోటలో పరచడం వల్ల తేమ నిలుస్తుంది." },
+            { id: 8, name: "ఉల్లి (Onion)", icon: "fa-onion", color: "text-purple-600 bg-purple-100", desc: "ఉల్లి సేంద్రీయ సాగు:\n\n1. నారు ఎంపిక: తెగుళ్ళు లేని ఆరోగ్యకరమైన నారును ఎంచుకోవాలి.\n2. రసం పీల్చే పురుగు: ఉల్లిపాయ పొలంలో పసుపు రంగు జిగురు అట్టలు ఏర్పాటు చేయాలి." }
+        ];
+
+        const newsData = [
+            { title: "పశుగ్రాసం విత్తనాలపై 75% రాయితీ", desc: "ఏపీ ప్రభుత్వం పాడి రైతుల కోసం పశుగ్రాసం విత్తనాలపై 75% సబ్సిడీని ప్రకటించింది. రైతులు దగ్గర్లోని ఆర్.బి.కే లో సంప్రదించండి.", time: "Today", fullText: "పాడి రైతుల ఆర్థిక భరోసా కోసం రాష్ట్ర ప్రభుత్వం కీలక నిర్ణయం తీసుకుంది. నాణ్యమైన పశుగ్రాసం విత్తనాలను 75 శాతం రాయితీతో అందిస్తోంది. ఈ అవకాశాన్ని సద్వినియోగం చేసుకోవాలని పశుసంవర్ధక శాఖ కోరింది. ప్రతి ఆర్.బి.కే లో విత్తనాల పంపిణీ జరుగుతోంది." },
+            { title: "ఉద్యాన పంటలకు డ్రిప్ ఇరిగేషన్", desc: "టమాటో, మిరప వంటి ఉద్యాన పంటలు సాగు చేసే రైతులకు డ్రిప్ పరికరాలపై 90% వరకు రాయితీ లభిస్తుంది.", time: "Yesterday", fullText: "ఉద్యానవన శాఖ ద్వారా సన్నకారు రైతులకు బిందు సేద్యం (డ్రిప్) పరికరాలపై 90% రాయితీతో పాటు, సబ్సిడీపై మోటార్లు కూడా అందిస్తున్నారు. దీనివల్ల నీటి వినియోగం తగ్గి, దిగుబడి పెరుగుతుంది. దరఖాస్తుకు ఆధార్, పట్టాదారు పాస్ బుక్ అవసరం." },
+            { title: "భారీ వర్ష సూచన", desc: "బంగాళాఖాతంలో అల్పపీడనం కారణంగా కోస్తా జిల్లాల్లో వచ్చే మూడు రోజులు వర్షాలు కురిసే అవకాశం ఉంది.", time: "2 days ago", fullText: "వాతావరణ శాఖ హెచ్చరికల ప్రకారం, రాబోయే 72 గంటల్లో తీర ప్రాంత జిల్లాల్లో భారీ నుంచి అతి భారీ వర్షాలు కురిసే అవకాశం ఉంది. రైతులు కోసిన పంటలను సురక్షిత ప్రాంతాలకు తరలించాలని, వరి నారుమళ్లకు నీటిని కట్టించాలని సూచించడమైనది." },
+            { title: "ట్రాక్టర్లపై 50% రాయితీ", desc: "చిన్న, సన్నకారు రైతుల కోసం వ్యవసాయ యాంత్రీకరణ పథకం కింద ట్రాక్టర్లపై 50% రాయితీని ప్రభుత్వం అందిస్తోంది.", time: "3 days ago", fullText: "వ్యవసాయ యాంత్రీకరణ పథకం కింద 35 హెచ్‌పీ లోపు ట్రాక్టర్లపై రూ. 4 లక్షల వరకు సబ్సిడీ లభిస్తుంది. గ్రూప్ లీజు పద్ధతిలో ఎక్కువ మంది రైతులు కలిసి దరఖాస్తు చేసుకోవచ్చు. మరింత సమాచారం కోసం జిల్లా వ్యవసాయ కార్యాలయాన్ని సంప్రదించండి." },
+            { title: "మిరప పంటకు రికార్డు ధర", desc: "ఈ సీజన్ లో మిరప పంటకు క్వింటాల్ ధర రూ. 20,000 దాటినట్లు మార్కెట్ వర్గాలు తెలిపాయి.", time: "5 days ago", fullText: "ఖమ్మం మిరప మార్కెట్ లో రికార్డు స్థాయిలో ధరలు నమోదయ్యాయి. ఈ సంవత్సరం కాయ నాణ్యత బాగా ఉండటం వల్ల ధరలు పెరిగాయని వ్యాపారులు తెలిపారు. రైతులు మంచి ధర వచ్చే వరకు పంట నిల్వ చేసుకుంటే మరింత లాభం పొందవచ్చు." },
+            { title: "పంట రుణాలు మాఫీకి దరఖాస్తులు", desc: "ప్రభుత్వ హామీ మేరకు పంట రుణాలు మాఫీకి సంబంధించిన దరఖాస్తులను బ్యాంకులు స్వీకరిస్తున్నాయి.", time: "1 Week ago", fullText: "రూ. 50 వేల లోపు పంట రుణాలు తీసుకున్న రైతులు బ్యాంక్ మేనేజర్ ను సంప్రదించి, తమ దరఖాస్తును సమర్పించవచ్చు. ఈ పథకం త్వరలో అమలులోకి రానుంది." },
+            { title: "పత్తికి తెగులు నివారణ", desc: "పత్తిలో రసం పీల్చే పురుగుల నివారణకు తీసుకోవాల్సిన చర్యలపై వ్యవసాయ శాస్త్రవేత్తలు సలహా ఇచ్చారు.", time: "2 Weeks ago", fullText: "పత్తి పంటకు ఆశించే తెగుళ్ళలో తామర పురుగు ప్రధానమైంది. దీని నివారణకు పురుగు మందుల వాడకాన్ని తగ్గించి, వేప నూనెను పిచికారీ చేయడం ఉత్తమం అని శాస్త్రవేత్తలు తెలియజేశారు." },
+            { title: "మొక్కజొన్నకు మార్కెట్ భరోసా", desc: "మొక్కజొన్న పంటకు మద్దతు ధరతో పాటు, ప్రభుత్వమే కొనుగోలు చేస్తుందని మార్కెటింగ్ శాఖ ప్రకటించింది.", time: "3 Weeks ago", fullText: "జిల్లాలోని రైతులు మొక్కజొన్నను ప్రభుత్వ కొనుగోలు కేంద్రాలలో అమ్మడానికి సిద్ధంగా ఉండాలని, ధాన్యం కొనుగోలు మాదిరిగానే మద్దతు ధర హామీ ఇవ్వబడుతుందని మార్కెటింగ్ శాఖ అధికారులు తెలిపారు." }
+        ];
+
+        const schemesData = [
+            { title: "వైఎస్ఆర్ రైతు భరోసా", icon: "fa-money-bill-wave", color: "border-green-400", info: "అర్హులైన ప్రతి రైతు కుటుంబానికి పెట్టుబడి సాయం కింద ఏటా రూ. 13,500 ఆర్థిక సాయం అందుతుంది. ఇది మూడు విడతలుగా రైతుల ఖాతాల్లో జమ అవుతుంది." },
+            { title: "ఉచిత పంటల బీమా", icon: "fa-shield-halved", color: "border-blue-400", info: "రైతులపై ఒక్క రూపాయి భారం లేకుండా ప్రభుత్వమే పంటల బీమా ప్రీమియం చెల్లిస్తుంది. ఈ-క్రాప్ (e-Crop) నమోదు తప్పనిసరి." },
+            { title: "సున్నా వడ్డీ పథకం", icon: "fa-percent", color: "border-yellow-400", info: "రూ. 1 లక్ష వరకు పంట రుణం తీసుకుని, ఏడాది లోపు తిరిగి చెల్లించే రైతులకు వడ్డీ మొత్తం ప్రభుత్వమే చెల్లిస్తుంది." },
+            { title: "జలకళ - ఉచిత బోర్లు", icon: "fa-faucet-drip", color: "border-teal-400", info: "పేద రైతుల భూముల్లో ఉచితంగా బోరు బావులు తవ్వించే పథకం 'జలకళ'. మోటారు కూడా ప్రభుత్వమే ఇస్తుంది." },
+            { title: "ఉచిత విద్యుత్", icon: "fa-bolt", color: "border-orange-400", info: "వ్యవసాయ పంపుసెట్లకు పగటిపూట ఉచితంగా 9 గంటల విద్యుత్ సరఫరా. దీని ద్వారా రైతులు రాత్రిపూట ఇబ్బంది పడకుండా ఉంటారు." },
+            { title: "యంత్ర సేవ పథకం", icon: "fa-tractor", color: "border-red-400", info: "సబ్సిడీపై ట్రాక్టర్లు, కల్టివేటర్లు వంటి ఆధునిక వ్యవసాయ పనిముట్లు అందించడం. ఆర్.బి.కే ద్వారా దరఖాస్తు చేసుకోవాలి." }
+        ];
+        
+        const staticWeather = {
+            status: "మేఘాలు పట్టి, తేలికపాటి వర్షం",
+            temp: "32°C",
+            humidity: "65%",
+            wind: "12 km/h",
+            icon: "fa-cloud-showers-heavy" 
+        };
+
+
+        // --- 2. ROUTING LOGIC (The core "Page" system) --- //
+        
+        // This function runs whenever the URL hash changes (e.g., #news)
+        function handleRouting() {
+            const hash = window.location.hash.replace('#', '') || 'home';
+            
+            // 1. Hide all pages
+            document.querySelectorAll('.page-container').forEach(p => p.classList.remove('page-active'));
+            
+            // 2. Stop audio immediately on page switch
+            stopAllSpeech();
+            
+            // 3. UI State Variables
+            let activePageId = 'homePage';
+            let headerTitleText = '';
+            let showBackBtn = false;
+            let showBottomNav = true;
+
+            // 4. Determine which page to show
+            switch(hash) {
+                case 'home':
+                    activePageId = 'homePage';
+                    headerTitleText = '';
+                    showBackBtn = false;
+                    showBottomNav = false;
+                    break;
+                case 'organic':
+                    activePageId = 'organicPage';
+                    headerTitleText = 'సేంద్రీయ సాగు';
+                    showBackBtn = true;
+                    break;
+                case 'news':
+                    activePageId = 'newsPage';
+                    headerTitleText = 'వార్తలు';
+                    showBackBtn = true;
+                    break;
+                case 'schemes':
+                    activePageId = 'schemesPage';
+                    headerTitleText = 'పథకాలు';
+                    showBackBtn = true;
+                    break;
+                case 'tollfree':
+                    activePageId = 'tollfreePage';
+                    headerTitleText = 'హెల్ప్ లైన్';
+                    showBackBtn = true;
+                    break;
+                default:
+                    activePageId = 'homePage';
+                    showBottomNav = false;
+            }
+
+            // 5. Apply Changes
+            document.getElementById(activePageId).classList.add('page-active');
+            
+            // Header Logic
+            const headerTitleEl = document.getElementById('headerTitle');
+            if (headerTitleText) {
+                headerTitleEl.textContent = headerTitleText;
+                headerTitleEl.classList.remove('hidden');
+            } else {
+                headerTitleEl.classList.add('hidden');
+            }
+
+            const backBtnEl = document.getElementById('backBtn');
+            showBackBtn ? backBtnEl.classList.remove('hidden') : backBtnEl.classList.add('hidden');
+
+            // Bottom Nav Logic
+            const nav = document.getElementById('bottomNav');
+            showBottomNav ? nav.classList.remove('hidden') : nav.classList.add('hidden');
+            
+            // Highlight active bottom nav button
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-green-600', 'text-gray-400');
+                if(btn.dataset.target === hash) {
+                    btn.classList.add('text-green-600');
+                } else {
+                    btn.classList.add('text-gray-400');
+                }
+            });
+        }
+
+        // Helper to change URL hash
+        function navigateTo(page) {
+            window.location.hash = page;
+        }
+
+        // Initialize Router listeners
+        window.addEventListener('hashchange', handleRouting);
+        window.addEventListener('load', () => {
+            renderContent(); // Load data first
+            handleRouting(); // Then check URL
+        });
+
+        // --- 3. RENDER CONTENT --- //
+
+        function renderContent() {
+            // Render Weather Info
+            const weatherContainer = document.getElementById('weatherInfo');
+            weatherContainer.innerHTML = `
+                <div class="flex flex-col items-center">
+                    <i class="fa-solid ${staticWeather.icon} text-3xl text-blue-500 mb-1"></i>
+                    <span class="font-bold text-lg text-gray-800 leading-tight">${staticWeather.temp}</span>
+                    <span class="text-xs text-gray-500">ఉష్ణోగ్రత</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <i class="fa-solid fa-umbrella text-3xl text-blue-500 mb-1"></i>
+                    <span class="font-bold text-lg text-gray-800 leading-tight">${staticWeather.humidity}</span>
+                    <span class="text-xs text-gray-500">తేమ శాతం</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <i class="fa-solid fa-wind text-3xl text-blue-500 mb-1"></i>
+                    <span class="font-bold text-lg text-gray-800 leading-tight">${staticWeather.wind}</span>
+                    <span class="text-xs text-gray-500">గాలి వేగం</span>
+                </div>
+                <div class="col-span-3 text-center mt-3 pt-3 border-t border-blue-50">
+                    <p class="text-sm font-semibold text-blue-700">${staticWeather.status}</p>
+                    <p class="text-xs text-gray-500">పంటలకు నీరు అవసరం లేదు</p>
+                </div>
+            `;
+            
+            // Render Crops
+            const cropsContainer = document.getElementById('cropsList');
+            cropsContainer.innerHTML = cropsData.map(crop => `
+                <div onclick="openModal(${crop.id})" class="bg-white p-4 rounded-xl shadow-md border border-gray-100 flex items-center justify-between active:scale-[0.98] transition cursor-pointer">
+                    <div class="flex items-center gap-4">
+                        <div class="${crop.color} w-14 h-14 rounded-full flex items-center justify-center text-2xl shrink-0 shadow-inner">
+                            <i class="fa-solid ${crop.icon}"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-800 text-lg">${crop.name}</h3>
+                            <span class="text-xs text-green-700 font-bold bg-green-100 px-2 py-0.5 rounded-full mt-1 inline-block">పూర్తి వివరాలు</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-gray-400"></i>
+                </div>
+            `).join('');
+
+            // Render News
+            const newsContainer = document.getElementById('newsList');
+            newsContainer.innerHTML = newsData.map((item, idx) => `
+                <div onclick="openModal(-${idx+1})" class="bg-white p-4 rounded-xl shadow-md border-l-4 border-blue-400 hover:shadow-lg transition cursor-pointer">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs text-gray-400 font-bold uppercase tracking-wide">${item.time}</span>
+                        <button onclick="event.stopPropagation(); speakListText(this, '${item.title}. ${item.desc}')" class="text-gray-400 hover:text-blue-600 p-1 rounded-full active:bg-gray-100">
+                            <i class="fa-solid fa-volume-high"></i>
+                        </button>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-lg mb-2 leading-snug">${item.title}</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed truncate">${item.desc}</p>
+                    <div class="mt-3 text-blue-600 text-sm font-semibold flex items-center gap-1">
+                        మరిన్ని వివరాలు <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </div>
+                </div>
+            `).join('');
+
+            // Render Schemes
+            const schemesContainer = document.getElementById('schemesList');
+            schemesContainer.innerHTML = schemesData.map(item => `
+                <div class="bg-white p-4 rounded-xl shadow-md border-l-4 ${item.color}">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold text-lg text-gray-800 flex items-center gap-2">
+                            <i class="fa-solid ${item.icon} text-orange-500"></i> ${item.title}
+                        </h3>
+                        <button onclick="speakListText(this, '${item.title}. ${item.info}')" class="text-orange-300 hover:text-orange-600 p-1 rounded-full active:bg-orange-50">
+                            <i class="fa-solid fa-volume-high text-lg"></i>
+                        </button>
+                    </div>
+                    <p class="text-gray-600 text-sm leading-relaxed">${item.info}</p>
+                </div>
+            `).join('');
+        }
+
+        // --- 4. MODAL LOGIC --- //
+        let currentModalText = "";
+        const modal = document.getElementById('cropModal');
+
+        function openModal(id) {
+            let title = "";
+            let content = "";
+            let isNews = id < 0;
+
+            if (isNews) {
+                // News item IDs are negative indices
+                const newsIndex = Math.abs(id) - 1;
+                const newsItem = newsData[newsIndex];
+                title = newsItem.title;
+                content = newsItem.fullText;
+            } else {
+                // Crop item IDs are positive
+                const crop = cropsData.find(c => c.id === id);
+                if(!crop) return;
+                title = crop.name;
+                content = crop.desc;
+            }
+
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalContent').innerText = content;
+            currentModalText = content;
+            
+            // Update button styles based on content type
+            const speakBtn = document.getElementById('modalSpeakBtn');
+            const guideSpan = speakBtn.previousElementSibling;
+
+            if (isNews) {
+                guideSpan.innerText = 'పూర్తి వార్త';
+                guideSpan.classList.remove('text-green-600', 'bg-green-50');
+                guideSpan.classList.add('text-blue-600', 'bg-blue-50');
+                speakBtn.classList.remove('bg-green-600');
+                speakBtn.classList.add('bg-blue-600');
+            } else {
+                guideSpan.innerText = 'Organic Guide';
+                guideSpan.classList.remove('text-blue-600', 'bg-blue-50');
+                guideSpan.classList.add('text-green-600', 'bg-green-50');
+                speakBtn.classList.remove('bg-blue-600');
+                speakBtn.classList.add('bg-green-600');
+            }
+
+
+            modal.classList.remove('hidden');
+            // Reset modal speak button
+            updateModalSpeakBtn(false);
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            stopAllSpeech();
+        }
+
+        // Close modal if clicking outside
+        modal.addEventListener('click', (e) => {
+            if(e.target === modal) closeModal();
+        });
+
+        // --- 5. AUDIO / TTS LOGIC --- //
+        let isSpeaking = false;
+        let currentUtterance = null;
+
+        function stopAllSpeech() {
+            window.speechSynthesis.cancel();
+            isSpeaking = false;
+            // Reset all icons visually (List items)
+            document.querySelectorAll('.fa-stop').forEach(el => {
+                el.classList.remove('fa-stop');
+                el.classList.add('fa-volume-high');
+            });
+            updateModalSpeakBtn(false);
+        }
+
+        // For list items (News/Schemes)
+        function speakListText(btn, text) {
+            const icon = btn.querySelector('i');
+            
+            // If clicking the same button while speaking, stop it
+            if (isSpeaking && icon.classList.contains('fa-stop')) {
+                stopAllSpeech();
+                return;
+            }
+
+            // Stop any previous speech
+            stopAllSpeech();
+
+            // Change icon to stop
+            icon.classList.remove('fa-volume-high');
+            icon.classList.add('fa-stop');
+            btn.classList.add('text-blue-600'); // Highlight active
+
+            speak(text, () => {
+                // On end
+                icon.classList.remove('fa-stop');
+                icon.classList.add('fa-volume-high');
+                btn.classList.remove('text-blue-600');
+            });
+        }
+
+        // For Modal Main Button
+        function toggleModalSpeech() {
+            if (isSpeaking) {
+                stopAllSpeech();
+            } else {
+                updateModalSpeakBtn(true);
+                speak(currentModalText, () => {
+                    updateModalSpeakBtn(false);
+                });
+            }
+        }
+
+        function updateModalSpeakBtn(speaking) {
+            const btn = document.getElementById('modalSpeakBtn');
+            // Check current background color to determine the highlight color (green for crops, blue for news)
+            const baseColorClass = btn.classList.contains('bg-green-600') ? 'bg-green-600' : 'bg-blue-600';
+
+            if(speaking) {
+                btn.innerHTML = '<i class="fa-solid fa-stop"></i> ఆపండి';
+                btn.classList.remove(baseColorClass);
+                btn.classList.add('bg-red-500');
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-volume-high"></i> వినండి';
+                btn.classList.add(baseColorClass);
+                btn.classList.remove('bg-red-500');
+            }
+        }
+
+        function speak(text, onEndCallback) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'te-IN'; 
+            utterance.rate = 0.9; 
+            
+            utterance.onend = () => {
+                isSpeaking = false;
+                if(onEndCallback) onEndCallback();
+            };
+            
+            // Important for mobile browsers not to garbage collect the event
+            currentUtterance = utterance;
+            
+            isSpeaking = true;
+            window.speechSynthesis.speak(utterance);
+        }
+
+    </script>
+</body>
+</html>
