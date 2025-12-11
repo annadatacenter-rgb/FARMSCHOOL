@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Farmschool - రైతు బడి</title>
+    
+    <!-- FAVICON ADDED: Uses a simple seedling emoji/icon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
@@ -94,9 +98,9 @@
                 <p class="text-gray-500 text-sm">మీకు కావలసిన సేవను ఎంచుకోండి</p>
             </div>
 
-            <!-- New Feature: Weather Card -->
-            <div class="mt-4 bg-white border border-blue-200 rounded-xl p-5 shadow-lg mb-8">
-                <div class="flex items-center justify-between mb-4 border-b pb-2 border-blue-50">
+            <!-- Enhanced Weather Card -->
+            <div class="mt-4 bg-blue-50 border border-blue-200 rounded-xl p-5 shadow-lg mb-8">
+                <div class="flex items-center justify-between mb-4 border-b pb-2 border-blue-100">
                     <h3 class="text-xl font-bold text-blue-700 flex items-center gap-2">
                         <i class="fa-solid fa-cloud-sun text-2xl"></i> నేటి వాతావరణం
                     </h3>
@@ -105,8 +109,13 @@
                 <div id="weatherInfo" class="grid grid-cols-3 gap-4 text-center">
                     <!-- Weather details injected here -->
                 </div>
+                <!-- Weather Advisory Section -->
+                <div id="weatherAdvisory" class="mt-4 pt-3 border-t border-blue-100">
+                    <!-- Advisory injected here -->
+                </div>
             </div>
 
+            <!-- Main Feature Grid -->
             <div class="grid grid-cols-2 gap-4">
                 <div onclick="navigateTo('organic')" class="btn-press bg-green-50 border border-green-200 rounded-2xl p-4 flex flex-col items-center justify-center gap-3 h-40 shadow-sm hover:shadow-md transition-all cursor-pointer">
                     <div class="bg-green-600 text-white w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-md ring-4 ring-green-100">
@@ -136,6 +145,18 @@
                     <span class="font-bold text-red-900 text-center">టోల్ ఫ్రీ<br>నెంబర్లు</span>
                 </div>
             </div>
+            
+            <!-- NEW SECTION: GOVERNMENT CROP PRICES (MSP) -->
+            <div class="mt-8 bg-amber-50 border border-amber-200 rounded-xl p-5 shadow-lg">
+                <div class="mb-4 flex items-center gap-2 text-amber-700 border-b pb-2 border-amber-100">
+                    <i class="fa-solid fa-tag text-xl"></i>
+                    <h3 class="text-xl font-bold">ప్రభుత్వ మద్దతు ధరలు (MSP)</h3>
+                </div>
+                <div id="mspPrices" class="space-y-3">
+                    <!-- Prices injected via JS -->
+                </div>
+            </div>
+
 
             <!-- Footer Info -->
             <div class="mt-10 text-center">
@@ -267,7 +288,7 @@
             <div class="p-5 overflow-y-auto flex-1 bg-green-50/50">
                 <div class="bg-white p-4 rounded-xl shadow-sm border border-green-100">
                     <div class="flex justify-between items-center mb-4 pb-2 border-b border-gray-100">
-                        <span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded">Organic Guide</span>
+                        <span id="modalType" class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded">Organic Guide</span>
                         
                         <button id="modalSpeakBtn" onclick="toggleModalSpeech()" class="bg-green-600 text-white px-4 py-1.5 rounded-full text-sm flex items-center gap-2 shadow hover:bg-green-700 transition">
                             <i class="fa-solid fa-volume-high"></i> వినండి
@@ -313,13 +334,21 @@
             { title: "ఉచిత విద్యుత్", icon: "fa-bolt", color: "border-orange-400", info: "వ్యవసాయ పంపుసెట్లకు పగటిపూట ఉచితంగా 9 గంటల విద్యుత్ సరఫరా. దీని ద్వారా రైతులు రాత్రిపూట ఇబ్బంది పడకుండా ఉంటారు." },
             { title: "యంత్ర సేవ పథకం", icon: "fa-tractor", color: "border-red-400", info: "సబ్సిడీపై ట్రాక్టర్లు, కల్టివేటర్లు వంటి ఆధునిక వ్యవసాయ పనిముట్లు అందించడం. ఆర్.బి.కే ద్వారా దరఖాస్తు చేసుకోవాలి." }
         ];
+
+        const mspPrices = [
+            { crop: "వరి (A Grade)", price: "₹2,203", unit: "క్వింటాల్ (100Kg)" },
+            { crop: "మొక్కజొన్న", price: "₹2,090", unit: "క్వింటాల్ (100Kg)" },
+            { crop: "కందులు", price: "₹7,000", unit: "క్వింటాల్ (100Kg)" },
+            { crop: "పత్తి (Medium)", price: "₹6,700", unit: "క్వింటాల్ (100Kg)" },
+        ];
         
         const staticWeather = {
-            status: "మేఘాలు పట్టి, తేలికపాటి వర్షం",
-            temp: "32°C",
-            humidity: "65%",
-            wind: "12 km/h",
-            icon: "fa-cloud-showers-heavy" 
+            status: "ఎండ కాస్తుంది, అధిక ఉష్ణోగ్రత",
+            temp: "38°C",
+            humidity: "40%",
+            wind: "8 km/h",
+            icon: "fa-sun",
+            advisory: "తరువాత 24 గంటల్లో ఉష్ణోగ్రత పెరిగే అవకాశం ఉంది. ఉదయం 11 గంటల నుండి సాయంత్రం 4 గంటల వరకు పంటలకు నీరు పెట్టడం మానుకోండి. తక్కువ ఎండ ఉన్న సమయాల్లో (ఉదయం, సాయంత్రం) మాత్రమే పిచికారీ చేయాలి." 
         };
 
 
@@ -428,7 +457,7 @@
                     <span class="text-xs text-gray-500">ఉష్ణోగ్రత</span>
                 </div>
                 <div class="flex flex-col items-center">
-                    <i class="fa-solid fa-umbrella text-3xl text-blue-500 mb-1"></i>
+                    <i class="fa-solid fa-droplet text-3xl text-blue-500 mb-1"></i>
                     <span class="font-bold text-lg text-gray-800 leading-tight">${staticWeather.humidity}</span>
                     <span class="text-xs text-gray-500">తేమ శాతం</span>
                 </div>
@@ -437,11 +466,28 @@
                     <span class="font-bold text-lg text-gray-800 leading-tight">${staticWeather.wind}</span>
                     <span class="text-xs text-gray-500">గాలి వేగం</span>
                 </div>
-                <div class="col-span-3 text-center mt-3 pt-3 border-t border-blue-50">
-                    <p class="text-sm font-semibold text-blue-700">${staticWeather.status}</p>
-                    <p class="text-xs text-gray-500">పంటలకు నీరు అవసరం లేదు</p>
-                </div>
             `;
+            
+            const advisoryContainer = document.getElementById('weatherAdvisory');
+            advisoryContainer.innerHTML = `
+                <p class="text-sm font-semibold text-blue-700 mb-1 flex items-center gap-1">
+                    <i class="fa-solid fa-triangle-exclamation text-yellow-500"></i> రైతులకు సలహా:
+                </p>
+                <p class="text-xs text-gray-600 leading-normal">${staticWeather.advisory}</p>
+            `;
+
+            // Render MSP Prices
+            const mspContainer = document.getElementById('mspPrices');
+            mspContainer.innerHTML = mspPrices.map(item => `
+                <div class="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm border border-amber-100">
+                    <div class="font-bold text-gray-800">${item.crop}</div>
+                    <div class="text-right">
+                        <span class="text-lg font-bold text-amber-600">${item.price}</span>
+                        <span class="text-xs text-gray-500 ml-1">/${item.unit}</span>
+                    </div>
+                </div>
+            `).join('');
+
             
             // Render Crops
             const cropsContainer = document.getElementById('cropsList');
@@ -498,6 +544,7 @@
         // --- 4. MODAL LOGIC --- //
         let currentModalText = "";
         const modal = document.getElementById('cropModal');
+        const modalTypeEl = document.getElementById('modalType');
 
         function openModal(id) {
             let title = "";
@@ -524,18 +571,17 @@
             
             // Update button styles based on content type
             const speakBtn = document.getElementById('modalSpeakBtn');
-            const guideSpan = speakBtn.previousElementSibling;
 
             if (isNews) {
-                guideSpan.innerText = 'పూర్తి వార్త';
-                guideSpan.classList.remove('text-green-600', 'bg-green-50');
-                guideSpan.classList.add('text-blue-600', 'bg-blue-50');
+                modalTypeEl.innerText = 'పూర్తి వార్త';
+                modalTypeEl.classList.remove('text-green-600', 'bg-green-50');
+                modalTypeEl.classList.add('text-blue-600', 'bg-blue-50');
                 speakBtn.classList.remove('bg-green-600');
                 speakBtn.classList.add('bg-blue-600');
             } else {
-                guideSpan.innerText = 'Organic Guide';
-                guideSpan.classList.remove('text-blue-600', 'bg-blue-50');
-                guideSpan.classList.add('text-green-600', 'bg-green-50');
+                modalTypeEl.innerText = 'Organic Guide';
+                modalTypeEl.classList.remove('text-blue-600', 'bg-blue-50');
+                modalTypeEl.classList.add('text-green-600', 'bg-green-50');
                 speakBtn.classList.remove('bg-blue-600');
                 speakBtn.classList.add('bg-green-600');
             }
